@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sharath-food-truck
+spec:
+  type: ClusterIP          # change to LoadBalancer if you're on cloud and want public IP
+  selector:
+    app: sharath-food-truck
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
