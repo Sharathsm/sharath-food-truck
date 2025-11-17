@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sharath-food-truck
+  labels:
+    app: sharath-food-truck
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sharath-food-truck
+  template:
+    metadata:
+      labels:
+        app: sharath-food-truck
+    spec:
+      containers:
+        - name: sharath-food-truck
+          image: YOUR_DOCKERHUB_USERNAME/sharath-food-truck:latest
+          ports:
+            - containerPort: 5000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 20
