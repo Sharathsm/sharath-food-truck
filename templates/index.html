@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sharath Food Truck</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg-dark: #050816;
+      --bg-card: #111827;
+      --bg-card-soft: #0b1220;
+      --accent: #f97316;
+      --accent-soft: rgba(249,115,22,0.1);
+      --accent-2: #22c55e;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border-soft: #1f2937;
+      --shadow-soft: 0 18px 35px rgba(0,0,0,0.6);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* NAVBAR */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      padding: 12px 10vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(3,7,18,0.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(148,163,184,0.15);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .truck-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: conic-gradient(from 200deg, #f97316, #eab308, #22c55e, #38bdf8, #f97316);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 18px rgba(249,115,22,0.7);
+    }
+
+    .truck-logo span {
+      background: #020617;
+      border-radius: 8px;
+      padding: 3px 6px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+
+    .brand-text h1 {
+      font-size: 18px;
+      margin: 0;
+    }
+
+    .brand-text p {
+      margin: 0;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .nav-right {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 1px solid rgba(148,163,184,0.45);
+      color: var(--text-muted);
+    }
+
+    .pill--live {
+      border-color: rgba(34,197,94,0.6);
+      color: #bbf7d0;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .pill--live span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 10px #22c55e;
+    }
+
+    /* LAYOUT */
+    main {
+      padding: 22px 10vw 36px;
+      display: grid;
+      grid-template-columns: minmax(0, 2.1fr) minmax(260px, 1.2fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: 1fr;
+        padding: 16px 16px 28px;
+      }
+      header {
+        padding-inline: 16px;
+      }
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #1e293b 0, #020617 65%);
+      border-radius: 18px;
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--border-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at top left, rgba(248,250,252,0.04), transparent 60%);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* HERO LEFT */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.5);
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .eyebrow span.badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    .hero-title {
+      font-size: 26px;
+      margin: 0 0 6px;
+    }
+
+    .hero-subtitle {
+      margin: 0 0 14px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .hero-highlight {
+      color: var(--accent);
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .chip {
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(55,65,81,0.9);
+      color: #e5e7eb;
+    }
+
+    .chip--pill {
+      background: rgba(34,197,94,0.12);
+      border-color: rgba(34,197,94,0.7);
+      color: #bbf7d0;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      border-radius: 999px;
+      padding: 8px 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #f97316, #eab308);
+      color: #111827;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(248, 165, 66, 0.4);
+    }
+
+    .btn-ghost {
+      background: rgba(15,23,42,0.95);
+      color: var(--text-main);
+      border: 1px solid rgba(75,85,99,0.9);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.05);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(15,23,42,1);
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 11px;
+      color: var(--text-muted);
+      border-top: 1px dashed rgba(75,85,99,0.7);
+      padding-top: 10px;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.8);
+      border: 1px dashed rgba(55,65,81,0.9);
+    }
+
+    .meta-pill strong {
+      color: var(--text-main);
+    }
+
+    /* MENU RIGHT */
+    .menu-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .menu-header h2 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .menu-sub {
+      margin: 0 0 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 6px 4px;
+      text-align: left;
+    }
+
+    th {
+      font-weight: 500;
+      color: var(--text-muted);
+      border-bottom: 1px solid rgba(55,65,81,0.9);
+    }
+
+    tr + tr td {
+      border-top: 1px solid rgba(31,41,55,0.6);
+    }
+
+    .price {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .id-pill {
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(55,65,81,0.9);
+      color: var(--text-muted);
+    }
+
+    .menu-footer {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+      margin-right: 6px;
+    }
+
+    footer {
+      padding: 10px 10vw 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(15,23,42,0.9);
+      background: #020617;
+      margin-top: auto;
+      text-align: center;
+    }
+
+    code {
+      padding: 2px 5px;
+      border-radius: 4px;
+      background: #020617;
+      border: 1px solid rgba(31,41,55,0.9);
+      font-size: 11px;
+    }
+
+    #order-result {
+      font-size: 12px;
+      margin-top: 8px;
+      min-height: 16px;
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <header>
+    <div class="brand">
+      <div class="truck-logo">
+        <span>FT</span>
+      </div>
+      <div class="brand-text">
+        <h1>Sharath Food Truck</h1>
+        <p>Late-night street bites · Bangalore style</p>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="pill">Flask · Docker · DevOps</div>
+      <div class="pill pill--live">
+        <span></span>
+        LIVE DEMO
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <!-- LEFT: STORY + CTA -->
+    <section class="card">
+      <div class="card-inner">
+        <div class="eyebrow">
+          <span class="badge-dot"></span>
+          Sharath’s late-night stack
+        </div>
+        <h2 class="hero-title">
+          Hot food, <span class="hero-highlight">hot deployments</span>.
+        </h2>
+        <p class="hero-subtitle">
+          This food truck isn’t just serving Paneer Rolls. It’s running on a complete DevOps stack:
+          Flask API in Docker, ready for Jenkins, ECR, and Kubernetes.
+        </p>
+
+        <div class="chips">
+          <span class="chip chip--pill">Built for CI/CD</span>
+          <span class="chip">Containerised with Docker</span>
+          <span class="chip">Health checks ready</span>
+          <span class="chip">Perfect for K8s demo</span>
+        </div>
+
+        <div class="hero-actions">
+          <button class="btn-primary" onclick="placeSampleOrder()">
+            🍽️ Place sample order
+          </button>
+          <button class="btn-ghost" onclick="openApiDocs()">
+            🔍 View raw API
+          </button>
+        </div>
+
+        <div id="order-result"></div>
+
+        <div class="hero-meta">
+          <div class="meta-pill">
+            🔁 <strong>Rolling deploy</strong> ready
+          </div>
+          <div class="meta-pill">
+            💾 In-memory orders (demo-safe)
+          </div>
+          <div class="meta-pill">
+            🧪 Probes: <code>/health</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: MENU / STATUS -->
+    <aside class="card" style="background: linear-gradient(145deg,#020617 0,#020617 30%,#0f172a 78%);">
+      <div class="card-inner">
+        <div class="menu-header">
+          <h2>Tonight’s Deployable Menu</h2>
+          <span style="font-size:11px;color:var(--text-muted);">
+            <span class="status-dot"></span> Truck online
+          </span>
+        </div>
+        <p class="menu-sub">
+          Menu items are coming directly from the Flask backend.
+          When you redeploy the container, this list updates with your code.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width:60px;">ID</th>
+              <th>Dish</th>
+              <th class="price">Price (₹)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in menu %}
+            <tr>
+              <td><span class="id-pill">#{{ item.id }}</span></td>
+              <td>{{ item.name }}</td>
+              <td class="price">{{ item.price }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div class="menu-footer">
+          <div>
+            <div style="font-size:11px;">
+              API: <code>GET /menu</code> · <code>POST /order</code> · <code>GET /health</code>
+            </div>
+          </div>
+          <div style="font-size:11px;">
+            Health status: <span id="health-status" style="color:var(--accent-2);">checking…</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    Sharath Food Truck · Demo microservice for DevOps pipelines · Flask · Docker · Jenkins · Kubernetes
+  </footer>
+
+  <script>
+    async function checkHealth() {
+      const el = document.getElementById("health-status");
+      try {
+        const res = await fetch("/health");
+        const data = await res.json();
+        if (data.status === "ok") {
+          el.textContent = "running";
+          el.style.color = "#22c55e";
+        } else {
+          el.textContent = "issue";
+          el.style.color = "#f97316";
+        }
+      } catch (err) {
+        el.textContent = "offline";
+        el.style.color = "#f97316";
+      }
+    }
+
+    async function placeSampleOrder() {
+      const resultEl = document.getElementById("order-result");
+      resultEl.style.color = "#e5e7eb";
+      resultEl.textContent = "Sending order to backend…";
+
+      try {
+        const res = await fetch("/order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            items: [
+              { id: 1, qty: 1 },
+              { id: 2, qty: 2 }
+            ]
+          })
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          resultEl.style.color = "#f97316";
+          resultEl.textContent = "Order failed: " + (err.error || res.status);
+          return;
+        }
+
+        const data = await res.json();
+        resultEl.style.color = "#22c55e";
+        resultEl.textContent =
+          "Order placed! ID " + data.order_id.slice(0, 8) +
+          "… · total ₹" + data.total;
+      } catch (e) {
+        resultEl.style.color = "#f97316";
+        resultEl.textContent = "Could not reach backend.";
+      }
+    }
+
+    function openApiDocs() {
+      window.open("/menu", "_blank");
+    }
+
+    checkHealth();
+  </script>
+</body>
+</html>
