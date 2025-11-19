@@ -1,33 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sharath-food-truck
+  name: foodtruck-deployment
   labels:
-    app: sharath-food-truck
+    app: foodtruck
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: sharath-food-truck
+      app: foodtruck
   template:
     metadata:
       labels:
-        app: sharath-food-truck
+        app: foodtruck
     spec:
       containers:
-        - name: sharath-food-truck
-          image: YOUR_DOCKERHUB_USERNAME/sharath-food-truck:latest
+        - name: foodtruck
+          image: sharathwork99/sharath-food-truck:jenkins
+          imagePullPolicy: Always        # 🔴 IMPORTANT for CI/CD
           ports:
-            - containerPort: 5000
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 5000
-            initialDelaySeconds: 5
-            periodSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 5000
-            initialDelaySeconds: 15
-            periodSeconds: 20
+            - containerPort: 5000        # Flask/Gunicorn port inside container
