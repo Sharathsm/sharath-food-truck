@@ -5,14 +5,15 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
 spec:
+  ingressClassName: nginx
   rules:
-    - host: sharath-food-truck.example.com
+    - host: sharath-food-truck.local
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: sharath-food-truck
+                name: foodtruck-service   # must match `kubectl get svc`
                 port:
-                  number: 80
+                  number: 80              # must be the service port, not NodePort
