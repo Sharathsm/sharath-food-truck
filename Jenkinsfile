@@ -2,14 +2,14 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "sharath-food-truck"
-        IMAGE_TAG  = "jenkins"
+        IMAGE = "sharathwork99/sharath-food-truck"
+        TAG   = "jenkins"
     }
 
     stages {
+
         stage('Checkout') {
             steps {
-                // Gets code from Git (Jenkins will use your repo URL)
                 checkout scm
             }
         }
@@ -22,14 +22,35 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat "docker build -t %IMAGE_NAME%:%IMAGE_TAG% ."
+                bat "docker build -t %IMAGE%:%TAG% ."
             }
         }
 
-        // You can enable this later once you configure a registry
-        stage('Post-Build') {
+        stage('Push to Docker Hub') {
             steps {
-                echo "Build completed. Image: ${env.IMAGE_NAME}:${env.IMAGE_TAG}"
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+
+                    bat "echo %PASS% | docker login -u %USER% --password-stdin"
+                    bat "docker push %IMAGE%:%TAG%"
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                bat '''
+                echo Applying manifests...
+                kubectl apply -f k8s/deployment.yaml
+                kubectl apply -f k8s/service.yaml
+                kubectl apply -f k8s/ingress.yaml
+
+                echo Restarting deployment...
+                kubectl rollout restart deployment/foodtruck-deployment
+
+                echo Waiting for rollout...
+                kubectl rollout status deployment/foodtruck-deployment
+                '''
             }
         }
     }
